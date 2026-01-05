@@ -28,9 +28,11 @@ export const Leads = () => {
   const [showNewLead, setShowNewLead] = useState(false);
   const [showEditLead, setShowEditLead] = useState(false);
   const [showRemarkModal, setShowRemarkModal] = useState(false);
+  const [confirmState, setConfirmState] = useState({ open: false, message: '', onConfirm: null });
   const [selectedLead, setSelectedLead] = useState(null);
   const [remarkText, setRemarkText] = useState('');
   const [remarkLeadId, setRemarkLeadId] = useState(null);
+  const [pendingReminder, setPendingReminder] = useState(null); // { leadId, value }
   
   // Form state
   const [formData, setFormData] = useState({
@@ -85,6 +87,19 @@ export const Leads = () => {
   const showToast = (message, type = 'error') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
+  };
+
+  const openConfirm = (message, onConfirm) => {
+    setConfirmState({ open: true, message, onConfirm });
+  };
+
+  const closeConfirm = () => setConfirmState({ open: false, message: '', onConfirm: null });
+
+  const handleConfirmYes = async () => {
+    if (confirmState.onConfirm) {
+      await confirmState.onConfirm();
+    }
+    closeConfirm();
   };
 
   const handleCreateLead = async (e) => {
@@ -147,15 +162,17 @@ export const Leads = () => {
   };
 
   const handleDeleteLead = async (leadId) => {
-    if (!confirm('Are you sure you want to delete this lead?')) return;
-    
-    try {
-      await leadService.deleteLead(leadId);
-      setLeads(leads.filter(l => l._id !== leadId));
-      await fetchLeads();
-    } catch (error) {
-      showToast('Error deleting lead: ' + error.message);
-    }
+    const doDelete = async () => {
+      try {
+        await leadService.deleteLead(leadId);
+        setLeads(leads.filter(l => l._id !== leadId));
+        await fetchLeads();
+      } catch (error) {
+        showToast('Error deleting lead: ' + error.message);
+      }
+    };
+
+    openConfirm('Delete this lead?', doDelete);
   };
 
   const openEditModal = (lead) => {
@@ -219,17 +236,22 @@ export const Leads = () => {
   };
 
   const handleReminderChange = async (leadId, dateValue) => {
-    try {
-      const payload = dateValue ? { next_follow_up_date: dateValue } : { next_follow_up_date: null };
-      const updated = await leadService.updateLead(leadId, payload);
-      const updatedList = leads.map(l => l._id === leadId ? updated : l);
-      setLeads(updatedList);
-      setFilteredLeads(updatedList);
-      await fetchLeads();
-    } catch (error) {
-      console.error('Next reminder change error:', error);
-      showToast('Error updating next reminder: ' + error.message);
-    }
+    setPendingReminder({ leadId, value: dateValue });
+    openConfirm('Update next reminder date?', async () => {
+      try {
+        const payload = dateValue ? { next_follow_up_date: dateValue } : { next_follow_up_date: null };
+        const updated = await leadService.updateLead(leadId, payload);
+        const updatedList = leads.map(l => l._id === leadId ? updated : l);
+        setLeads(updatedList);
+        setFilteredLeads(updatedList);
+        await fetchLeads();
+      } catch (error) {
+        console.error('Next reminder change error:', error);
+        showToast('Error updating next reminder: ' + error.message);
+      } finally {
+        setPendingReminder(null);
+      }
+    });
   };
 
   return (
@@ -335,14 +357,14 @@ export const Leads = () => {
                   </td>
                   <td>{lead.assigned_to}</td>
                   <td>
-                    <input
-                      type="date"
-                      value={lead.next_follow_up_date ? lead.next_follow_up_date.split('T')[0] : ''}
-                      onChange={(e) => handleReminderChange(lead._id, e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                      onFocus={(e) => e.stopPropagation()}
-                      className="inline-date"
-                    />
+                  <input
+                    type="date"
+                    value={lead.next_follow_up_date ? lead.next_follow_up_date.split('T')[0] : ''}
+                    onChange={(e) => handleReminderChange(lead._id, e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
+                    className="inline-date"
+                  />
                   </td>
                   <td className="actions-cell">
                     <button
@@ -636,6 +658,21 @@ export const Leads = () => {
             placeholder="Add or edit remarks for this lead"
           />
         </div>
+      </Modal>
+
+      {/* Confirm Modal */}
+      <Modal
+        isOpen={confirmState.open}
+        title="Please Confirm"
+        onClose={closeConfirm}
+        footer={
+          <div className="modal-actions">
+            <button className="btn btn-secondary" onClick={closeConfirm}>Cancel</button>
+            <button className="btn btn-primary" onClick={handleConfirmYes}>Confirm</button>
+          </div>
+        }
+      >
+        <p>{confirmState.message}</p>
       </Modal>
     </div>
   );
