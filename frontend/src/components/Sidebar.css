@@ -1,32 +1,47 @@
 .sidebar {
-    width: 250px;
-    background: white;
-    border-right: 1px solid var(--border);
+    width: 280px;
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-right: 5px solid #000000;
     display: flex;
     flex-direction: column;
     height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    box-shadow: var(--shadow);
+    box-shadow: 6px 0 15px rgba(0, 0, 0, 0.6);
 }
 
 .sidebar-header {
     padding: 24px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 4px solid var(--accent-cyan);
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(255, 16, 240, 0.05) 100%);
 }
 
 .sidebar-header h1 {
     margin: 0;
     font-size: 24px;
-    font-weight: 700;
-    color: var(--primary);
+    font-weight: 900;
+    color: #000000;
+}
+
+.brand-pill {
+    background: var(--accent-yellow);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 3px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    display: inline-block;
+    font-size: 22px;
 }
 
 .sidebar-header p {
-    margin: 4px 0 0 0;
+    margin: 6px 0 0 0;
     font-size: 12px;
     color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-left: 10px;
 }
 
 .sidebar-nav {
@@ -38,57 +53,104 @@
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
+    gap: 14px;
+    padding: 14px 18px;
     color: var(--text-secondary);
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
+    transition: all 250ms ease;
+    border-left: 4px solid transparent;
+    margin: 6px 8px;
+    border-radius: 20px;
+    font-weight: 700;
 }
 
 .nav-item:hover {
-    background-color: var(--bg);
-    color: var(--primary);
+    background-color: rgba(0, 217, 255, 0.1);
+    color: var(--accent-cyan);
+    border-left-color: var(--accent-cyan);
+    transform: translateX(4px);
 }
 
 .nav-item.active {
-    background-color: #eff6ff;
-    color: var(--primary);
-    border-left-color: var(--primary);
-    font-weight: 500;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.2) 0%, rgba(255, 16, 240, 0.1) 100%);
+    color: var(--accent-cyan);
+    border-left-color: var(--accent-cyan);
+    font-weight: 700;
+    box-shadow: inset -4px 0 0 var(--accent-cyan);
 }
 
 .nav-item .icon {
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .sidebar-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
+    padding: 18px 16px;
+    border-top: 4px solid var(--accent-pink);
+    background: linear-gradient(135deg, rgba(255, 16, 240, 0.05) 0%, rgba(0, 217, 255, 0.05) 100%);
 }
 
 .user-info {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 18px;
+    border: 2px solid var(--border);
 }
 
 .founder-name {
     margin: 0;
     font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 500;
+    color: var(--text);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
 .logout-btn {
     width: 100%;
-    padding: 8px 12px;
-    background-color: #fee2e2;
-    color: var(--danger);
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    padding: 12px 14px;
+    background: var(--accent-pink);
+    color: #000000;
+    border: 3px solid #000000;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 800;
+    transition: all 250ms ease;
+    box-shadow: 3px 4px 0px #000000;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .logout-btn:hover {
-    background-color: var(--danger);
-    color: white;
+    transform: translate(1px, 1px);
+    box-shadow: 1px 2px 0px #000000;
+    filter: brightness(1.1);
+}
+
+.logout-btn:active {
+    filter: saturate(0.85);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 5px solid #000000;
+        position: relative;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        padding: 0;
+    }
+
+    .nav-item {
+        flex: 1;
+        margin: 0;
+        border-radius: 0;
+        justify-content: center;
+        flex-direction: column;
+        padding: 12px;
+    }
 }

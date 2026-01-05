@@ -16,7 +16,7 @@ export const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <h1>Route2Rise</h1>
+        <h1><span className="brand-pill">Route 2 Rise</span></h1>
         <p>Lead Management</p>
       </div>
 
@@ -25,14 +25,14 @@ export const Sidebar = () => {
           to="/dashboard"
           className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}
         >
-          <span className="icon">📊</span>
+
           <span>Dashboard</span>
         </Link>
         <Link
           to="/leads"
           className={`nav-item ${isActive('/leads') ? 'active' : ''}`}
         >
-          <span className="icon">📋</span>
+
           <span>Leads</span>
         </Link>
       </nav>

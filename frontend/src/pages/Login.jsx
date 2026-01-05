@@ -46,7 +46,7 @@ export const Login = () => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h1>Route2Rise</h1>
+          <h1><span className="title-text">Route2Rise</span></h1>
           <p>Lead Management System</p>
         </div>
 

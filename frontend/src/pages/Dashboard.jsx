@@ -39,7 +39,7 @@ export const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <h1>Dashboard</h1>
+      <h1><span className="title-text">Dashboard</span></h1>
 
       <div className="stats-grid">
         <div className="stat-card">
