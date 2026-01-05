@@ -264,7 +264,7 @@ export const Leads = () => {
       )}
 
       <div className="leads-header">
-        <h1>Leads</h1>
+        <h1><span className="title-text">Leads</span></h1>
         <button
           className="btn btn-primary"
           onClick={() => {
