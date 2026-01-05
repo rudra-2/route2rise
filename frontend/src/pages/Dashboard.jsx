@@ -10,7 +10,13 @@ export const Dashboard = () => {
     const fetchStats = async () => {
       try {
         const data = await leadService.getDashboardStats();
-        setStats(data);
+
+        // Ensure upcoming calls are sorted soonest-first and valid
+        const upcoming = (data.upcoming_calls || [])
+          .filter((lead) => lead.next_follow_up_date)
+          .sort((a, b) => new Date(a.next_follow_up_date) - new Date(b.next_follow_up_date));
+
+        setStats({ ...data, upcoming_calls: upcoming });
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
       } finally {
@@ -19,6 +25,8 @@ export const Dashboard = () => {
     };
 
     fetchStats();
+    const interval = setInterval(fetchStats, 30000); // refresh every 30s
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -59,7 +67,7 @@ export const Dashboard = () => {
                     <p>{lead.sector}</p>
                   </div>
                   <div className="call-date">
-                    {new Date(lead.call_schedule_date).toLocaleDateString()}
+                    {lead.next_follow_up_date ? new Date(lead.next_follow_up_date).toLocaleDateString() : '-'}
                   </div>
                 </div>
               ))}

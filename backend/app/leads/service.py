@@ -203,11 +203,11 @@ class LeadService:
         owner_groups = await db.leads.aggregate(owner_pipeline).to_list(None)
         leads_by_owner = {item["_id"]: item["count"] for item in owner_groups}
         
-        # Upcoming calls
+        # Upcoming reminders (using next_follow_up_date)
         upcoming_calls = await db.leads.find({
             **query,
-            "call_schedule_date": {"$exists": True, "$ne": None, "$gte": datetime.utcnow()}
-        }).sort("call_schedule_date", 1).limit(5).to_list(5)
+            "next_follow_up_date": {"$exists": True, "$ne": None, "$ne": ""}
+        }).sort("next_follow_up_date", 1).limit(5).to_list(5)
         
         for call in upcoming_calls:
             call["_id"] = str(call["_id"])
