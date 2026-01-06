@@ -61,6 +61,12 @@
     flex-wrap: wrap;
 }
 
+.filter-pair {
+    display: flex;
+    gap: 12px;
+    flex: 0 0 auto;
+}
+
 .filter-input,
 .filter-select {
     padding: 10px 12px;
@@ -80,6 +86,29 @@
 
 .filter-select {
     min-width: 150px;
+}
+
+.owner-chip {
+    border: 2px solid var(--border);
+    background: var(--bg-tertiary);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+.owner-chip:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.owner-chip-active {
+    background: var(--accent-cyan);
+    color: #000000;
+    border-color: #000000;
+    box-shadow: 2px 2px 0px #000000;
 }
 
 .filter-input:focus,
@@ -122,11 +151,6 @@
     transition: all 250ms ease;
 }
 
-.leads-table tbody tr:hover {
-    background: rgba(0, 217, 255, 0.05);
-    border-left: 5px solid var(--accent-cyan);
-}
-
 .leads-table td {
     padding: 14px;
 }
@@ -143,6 +167,27 @@
 
 .contact-cell {
     font-size: 13px;
+}
+
+.sector-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sector-mobile-below {
+    display: none;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.contact-desktop {
+    display: block;
+}
+
+.contact-mobile {
+    display: none;
 }
 
 .contact-cell a {
@@ -385,6 +430,13 @@
         margin-bottom: 16px;
     }
 
+    .filter-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+
     .filter-input,
     .filter-select {
         width: 100%;
@@ -411,12 +463,16 @@
         display: none;
     }
 
-    /* Redesign table rows for mobile - 2 lines layout */
+    /* Redesign table rows for mobile - multi-line grid */
     .leads-table tbody tr {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 6px;
-        padding: 10px 8px;
+        grid-template-columns: 1fr 1fr auto;
+        grid-template-areas:
+            "company sector status"
+            "contact contact contact"
+            "owner date actions";
+        gap: 4px;
+        padding: 8px 6px;
         border-bottom: 3px solid var(--border);
         align-items: center;
     }
@@ -427,47 +483,25 @@
         border: none;
     }
 
-    /* Line 1: Company + Sector (span 1.5 cols each) */
-    .lead-row td:nth-child(1) {
-        grid-column: 1 / 2;
-        padding: 4px 3px;
-    }
+    /* Line 1: Company | Sector | Status (right-aligned) */
+    .lead-row td:nth-child(1) { grid-area: company; padding: 4px 3px; }
+    .lead-row td:nth-child(2) { grid-area: sector; padding: 4px 3px; }
+    .lead-row td:nth-child(4) { grid-area: status; padding: 4px 3px; justify-self: end; }
 
-    .lead-row td:nth-child(2) {
-        grid-column: 2 / 3;
-        padding: 4px 3px;
-    }
+    /* Line 2: Contact spans full width */
+    .lead-row td:nth-child(3) { grid-area: contact; padding: 4px 3px; }
 
-    /* Line 2: Contact + Status */
-    .lead-row td:nth-child(3) {
-        grid-column: 1 / 2;
-        padding: 4px 3px;
-    }
+    /* Line 3: Owner | Date | Actions */
+    .lead-row td:nth-child(5) { grid-area: owner; padding: 4px 3px; font-size: 10px; }
+    .lead-row td:nth-child(6) { grid-area: date; padding: 4px 3px; }
+    .lead-row td:nth-child(7) { grid-area: actions; display: flex; gap: 3px; align-items: center; padding: 4px 3px; }
 
-    .lead-row td:nth-child(4) {
-        grid-column: 2 / 3;
-        padding: 4px 3px;
-    }
-
-    /* Line 3: Owner + Date + Actions (all in 3rd column area and onwards) */
-    .lead-row td:nth-child(5) {
-        grid-column: 1 / 2;
-        padding: 4px 3px;
+    /* Tighter status control on mobile */
+    .status-select {
+        width: auto;
+        min-width: 90px;
         font-size: 10px;
-    }
-
-    .lead-row td:nth-child(6) {
-        grid-column: 2 / 3;
-        padding: 4px 3px;
-    }
-
-    /* Actions cell - same line as owner/date */
-    .lead-row td:nth-child(7) {
-        grid-column: 3 / 4;
-        display: flex;
-        gap: 3px;
-        align-items: center;
-        padding: 4px 3px;
+        padding: 5px 8px;
     }
 
     .lead-row .actions-cell {
@@ -487,6 +521,30 @@
         font-size: 10px;
     }
 
+    .sector-cell {
+        gap: 4px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sector-mobile-below {
+        display: block;
+        font-size: 11px;
+    }
+
+    .contact-desktop {
+        display: none;
+    }
+
+    .contact-mobile {
+        display: block;
+        font-size: 10px;
+    }
+
+    .contact-mobile a {
+        display: block;
+    }
+
     .contact-cell a,
     .contact-cell p {
         margin: 2px 0 0 0;
@@ -499,9 +557,9 @@
     }
 
     .btn-small {
-        padding: 4px 6px;
-        font-size: 8px;
-        border-radius: 8px;
+        padding: 5px 7px;
+        font-size: 9px;
+        border-radius: 9px;
         border: 2px solid var(--border);
         box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
         white-space: nowrap;
@@ -521,6 +579,13 @@
         border: 2px solid var(--border);
         width: auto;
         min-width: 70px;
+    }
+
+    .owner-chip {
+        font-size: 10px;
+        padding: 4px 8px;
+        border-width: 2px;
+        border-radius: 10px;
     }
 
     .btn-icon {

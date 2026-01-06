@@ -60,17 +60,24 @@ export const Dashboard = () => {
           <h2>Upcoming Calls</h2>
           {stats.upcoming_calls.length > 0 ? (
             <div className="leads-list">
-              {stats.upcoming_calls.map((lead) => (
-                <div key={lead._id} className="lead-item">
-                  <div>
-                    <strong>{lead.company_name}</strong>
-                    <p>{lead.sector}</p>
+              {stats.upcoming_calls.map((lead) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const dateVal = lead.next_follow_up_date ? new Date(lead.next_follow_up_date) : null;
+                const isOverdue = dateVal && dateVal < today;
+
+                return (
+                  <div key={lead._id} className="lead-item">
+                    <div>
+                      <strong>{lead.company_name}</strong>
+                      <p>{lead.sector}</p>
+                    </div>
+                    <div className={`call-date ${isOverdue ? 'call-date-overdue' : ''}`}>
+                      {lead.next_follow_up_date ? new Date(lead.next_follow_up_date).toLocaleDateString() : '-'}
+                    </div>
                   </div>
-                  <div className="call-date">
-                    {lead.next_follow_up_date ? new Date(lead.next_follow_up_date).toLocaleDateString() : '-'}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <p className="empty-state">No upcoming calls</p>
@@ -97,6 +104,7 @@ export const Dashboard = () => {
             {stats.recent_updates.map((lead) => (
               <div key={lead._id} className="recent-update-item">
                 <div className="update-company">{lead.company_name}</div>
+                <div className="update-sector">{lead.sector || 'N/A'}</div>
                 <span className={`status-badge status-${lead.status.toLowerCase().replace(/[- ]/g, '')}`}>
                   {lead.status}
                 </span>

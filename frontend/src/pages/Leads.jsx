@@ -52,6 +52,7 @@ export const Leads = () => {
     search: '',
     status: '',
     sector: '',
+    owner: '',
   });
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export const Leads = () => {
         search: filters.search || undefined,
         status: filters.status || undefined,
         sector: filters.sector || undefined,
+        assigned_to: filters.owner || undefined,
         limit: 100,
       });
       setLeads(data.leads);
@@ -94,6 +96,13 @@ export const Leads = () => {
   };
 
   const closeConfirm = () => setConfirmState({ open: false, message: '', onConfirm: null });
+
+  const toggleOwnerFilter = (owner) => {
+    setFilters(prev => ({
+      ...prev,
+      owner: prev.owner === owner ? '' : owner,
+    }));
+  };
 
   const handleConfirmYes = async () => {
     if (confirmState.onConfirm) {
@@ -294,26 +303,28 @@ export const Leads = () => {
           onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           className="filter-input"
         />
-        <select
-          value={filters.status}
-          onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-          className="filter-select"
-        >
-          <option value="">All Statuses</option>
-          {STATUSES.map(status => (
-            <option key={status} value={status}>{status}</option>
-          ))}
-        </select>
-        <select
-          value={filters.sector}
-          onChange={(e) => setFilters({ ...filters, sector: e.target.value })}
-          className="filter-select"
-        >
-          <option value="">All Sectors</option>
-          {SECTORS.map(sector => (
-            <option key={sector} value={sector}>{sector}</option>
-          ))}
-        </select>
+        <div className="filter-pair">
+          <select
+            value={filters.status}
+            onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+            className="filter-select"
+          >
+            <option value="">All Statuses</option>
+            {STATUSES.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+          <select
+            value={filters.sector}
+            onChange={(e) => setFilters({ ...filters, sector: e.target.value })}
+            className="filter-select"
+          >
+            <option value="">All Sectors</option>
+            {SECTORS.map(sector => (
+              <option key={sector} value={sector}>{sector}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {loading ? (
@@ -338,10 +349,24 @@ export const Leads = () => {
               {filteredLeads.map(lead => (
                 <tr key={lead._id} onClick={() => openEditModal(lead)} className="lead-row">
                   <td className="company-cell">{lead.company_name}</td>
-                  <td>{lead.sector}</td>
+                  <td>
+                    <div className="sector-cell">
+                      <span className="sector-text">{lead.sector}</span>
+                      {lead.mobile_number && (
+                        <span className="sector-mobile-below">{lead.mobile_number}</span>
+                      )}
+                    </div>
+                  </td>
                   <td className="contact-cell">
-                    {lead.email && <a href={`mailto:${lead.email}`}>{lead.email}</a>}
-                    {lead.mobile_number && <p>{lead.mobile_number}</p>}
+                    <div className="contact-desktop">
+                      {lead.email && <a href={`mailto:${lead.email}`}>{lead.email}</a>}
+                      {lead.mobile_number && <p>{lead.mobile_number}</p>}
+                    </div>
+                    <div className="contact-mobile">
+                      {!lead.mobile_number && lead.email && (
+                        <a href={`mailto:${lead.email}`}>{lead.email}</a>
+                      )}
+                    </div>
                   </td>
                   <td>
                     <select
@@ -355,7 +380,17 @@ export const Leads = () => {
                       ))}
                     </select>
                   </td>
-                  <td>{lead.assigned_to}</td>
+                  <td>
+                    <button
+                      className={`owner-chip ${filters.owner === lead.assigned_to ? 'owner-chip-active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleOwnerFilter(lead.assigned_to || '');
+                      }}
+                    >
+                      {lead.assigned_to || 'Unassigned'}
+                    </button>
+                  </td>
                   <td>
                   <input
                     type="date"

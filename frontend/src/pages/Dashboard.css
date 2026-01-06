@@ -149,6 +149,13 @@
     border: 2px solid var(--border);
 }
 
+.call-date-overdue {
+    color: #ffffff;
+    background: #ff1744;
+    border-color: #ff1744;
+    box-shadow: 3px 4px 0px #000000;
+}
+
 .sector-breakdown {
     display: flex;
     flex-direction: column;
@@ -212,6 +219,15 @@
     font-weight: 700;
     color: var(--accent-cyan);
     min-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.update-sector {
+    color: var(--text-secondary);
+    font-weight: 600;
+    min-width: 120px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -396,6 +412,10 @@
     .update-company {
         font-size: 11px;
         min-width: 100px;
+    }
+
+    .update-sector {
+        display: none;
     }
 
     .founder-initial {
