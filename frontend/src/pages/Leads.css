@@ -111,6 +111,12 @@
     box-shadow: 2px 2px 0px #000000;
 }
 
+.owner-chip-active:hover {
+    background: #000000;
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
 .filter-input:focus,
 .filter-select:focus {
     outline: none;
