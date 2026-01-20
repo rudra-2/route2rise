@@ -225,8 +225,8 @@ Check token expiration
 
 ## 📜 License
 
-Internal use only. Not licensed for external distribution.
+Internal use only. Not licensed for external distribution. - Rudra Patel
 
 ---
 
-**Built with ❤️ for SKYRYSE**
+**Built with ❤️ for SKYRYSE by Rudra**
